@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
+
 
 @RestController
 public class UserController {
@@ -37,6 +39,7 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     ResponseEntity<?> delete(@PathVariable("id") long id){
-        return new ResponseEntity<>(userService.deleteUser(id),HttpStatus.OK);
+        userService.deleteUser(id);
+        return new ResponseEntity<>(null,HttpStatus.ACCEPTED);
    }
 }
