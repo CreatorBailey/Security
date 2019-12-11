@@ -29,4 +29,13 @@ public class UserController {
     ResponseEntity<?> getAllUsers(Pageable pageable){
         return new ResponseEntity<>(userService.getAllUsersByPage(pageable), HttpStatus.ACCEPTED);
     }
+    @PutMapping("/users/{id}")
+    ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable long id){
+        return new ResponseEntity<>(userService.update(user,id),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/{id}")
+    ResponseEntity<?> delete(@PathVariable("id") long id){
+        return new ResponseEntity<>(userService.deleteUser(id),HttpStatus.OK);
+    }
 }
