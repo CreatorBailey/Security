@@ -29,4 +29,8 @@ public class UserController {
     ResponseEntity<?> getAllUsers(Pageable pageable){
         return new ResponseEntity<>(userService.getAllUsersByPage(pageable), HttpStatus.ACCEPTED);
     }
+    @PutMapping("/users/{id}")
+    ResponseEntity<?> editUser(@RequestBody User user, @PathVariable("id")long id ){
+        return new ResponseEntity<>(userService.update(user,id), HttpStatus.CREATED);
+    }
 }

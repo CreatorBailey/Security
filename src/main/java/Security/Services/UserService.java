@@ -27,4 +27,7 @@ public class UserService {
     public Page<User> getAllUsersByPage(Pageable pageable){
         return userRepository.findAll(pageable);
     }
+    public User update(User user, Long id){
+        return userRepository.save(user);
+    }
 }
