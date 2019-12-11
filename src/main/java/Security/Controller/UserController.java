@@ -30,6 +30,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsersByPage(pageable), HttpStatus.ACCEPTED);
     }
     @PutMapping("/users/{id}")
+
     ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable long id){
         return new ResponseEntity<>(userService.update(user,id),HttpStatus.OK);
     }
@@ -37,5 +38,5 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     ResponseEntity<?> delete(@PathVariable("id") long id){
         return new ResponseEntity<>(userService.deleteUser(id),HttpStatus.OK);
-    }
+   }
 }

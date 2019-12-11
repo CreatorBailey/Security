@@ -27,10 +27,13 @@ public class UserService {
     public Page<User> getAllUsersByPage(Pageable pageable){
         return userRepository.findAll(pageable);
     }
+
     public User update(User user, long id){
         return userRepository.save(user);
     }
     public void deleteUser(long id){
          userRepository.deleteById(id);
     }
+
+   
 }
