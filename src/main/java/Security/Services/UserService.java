@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import java.nio.ByteBuffer;
@@ -20,14 +22,19 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User save(User user){
         User user1 = new User();
         user1.setFirst_name(user.getFirst_name());
         user1.setLast_name(user.getLast_name());
         user1.setEmail(user.getEmail());
-        user1.setPassword(user.getPassword());
-        Long userId = (ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
+        user1.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Long userId;
+        do {
+           userId = (ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
+        }while (userId < 1);
         user1.setId(userId);
 //       Converting default linkedhashmap to a list of addresses
         Set<Address> addresses = mapper.convertValue(
@@ -35,9 +42,13 @@ public class UserService {
                 new TypeReference<Set<Address>>() { });
         user1.setAddresses(addresses);
 //        Generating a random ID for each address
+        Long finalUserId = userId;
         user1.getAddresses().forEach(address -> {
-            address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
-            address.setUserId(userId);
+//            Loops through until ID is higher than 0
+            do{
+                address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
+            } while (address.getId() < 1);
+            address.setUserId(finalUserId);
         });
          return userRepository.save(user1);
     }
@@ -51,8 +62,6 @@ public class UserService {
     public Page<User> getAllUsersByPage(Pageable pageable){
         return userRepository.findAll(pageable);
     }
-
-
     public User update(User user1, long id){
          User user = userRepository.getOne(id);
          if (user1.getEmail()!=null) {
@@ -66,7 +75,6 @@ public class UserService {
         }if (user1.getAddresses()!=null) {
             user.setAddresses(user1.getAddresses());
         }
-
         return userRepository.save(user);
     }
     public void deleteUser(long id){
