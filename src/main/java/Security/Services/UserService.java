@@ -27,7 +27,10 @@ public class UserService {
         user1.setLast_name(user.getLast_name());
         user1.setEmail(user.getEmail());
         user1.setPassword(user.getPassword());
-        Long userId = (ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
+        Long userId;
+        do {
+           userId = (ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
+        }while (userId < 1);
         user1.setId(userId);
 //       Converting default linkedhashmap to a list of addresses
         Set<Address> addresses = mapper.convertValue(
@@ -35,9 +38,13 @@ public class UserService {
                 new TypeReference<Set<Address>>() { });
         user1.setAddresses(addresses);
 //        Generating a random ID for each address
+        Long finalUserId = userId;
         user1.getAddresses().forEach(address -> {
-            address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
-            address.setUserId(userId);
+//            Loops through until ID is higher than 0
+            do{
+                address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
+            } while (address.getId() < 1);
+            address.setUserId(finalUserId);
         });
          return userRepository.save(user1);
     }
@@ -51,7 +58,6 @@ public class UserService {
     public Page<User> getAllUsersByPage(Pageable pageable){
         return userRepository.findAll(pageable);
     }
-
 
     public User update(User user, long id){
         return userRepository.save(user);
