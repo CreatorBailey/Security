@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
+
 
 @RestController
 public class UserController {
@@ -29,4 +31,20 @@ public class UserController {
     ResponseEntity<?> getAllUsers(Pageable pageable){
         return new ResponseEntity<>(userService.getAllUsersByPage(pageable), HttpStatus.ACCEPTED);
     }
+
+    @PutMapping("/users/{id}")
+    ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable long id){
+        return new ResponseEntity<>(userService.update(user,id),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/{id}")
+    ResponseEntity<?> delete(@PathVariable("id") long id){
+        userService.deleteUser(id);
+        return new ResponseEntity<>(null,HttpStatus.ACCEPTED);
+   }
+   @GetMapping("/users/{id}")
+    ResponseEntity<?>getById(@PathVariable("id") long id){
+        return new ResponseEntity<>(userService.getById(id),HttpStatus.OK);
+   }
+
 }

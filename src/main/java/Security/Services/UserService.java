@@ -1,6 +1,5 @@
 package Security.Services;
 
-
 import Security.Repository.UserRepository;
 import Security.model.Address;
 import Security.model.User;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import java.nio.ByteBuffer;
 import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -52,4 +52,14 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+
+    public User update(User user, long id){
+        return userRepository.save(user);
+    }
+    public void deleteUser(long id){
+         userRepository.deleteById(id);
+    }
+    public Optional<User> getById(long id){
+        return userRepository.findById(id);
+    }
 }
