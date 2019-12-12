@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import java.nio.ByteBuffer;
@@ -20,13 +22,15 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User save(User user){
         User user1 = new User();
         user1.setFirst_name(user.getFirst_name());
         user1.setLast_name(user.getLast_name());
         user1.setEmail(user.getEmail());
-        user1.setPassword(user.getPassword());
+        user1.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         Long userId;
         do {
            userId = (ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
