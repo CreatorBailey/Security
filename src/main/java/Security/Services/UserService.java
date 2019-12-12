@@ -53,7 +53,20 @@ public class UserService {
     }
 
 
-    public User update(User user, long id){
+    public User update(User user1, long id){
+         User user = userRepository.getOne(id);
+         if (user1.getEmail()!=null) {
+             user.setEmail(user1.getEmail());
+         }if (user1.getFirst_name()!=null) {
+            user.setFirst_name(user1.getFirst_name());
+        }if (user1.getLast_name()!=null) {
+            user.setLast_name(user1.getLast_name());
+        }if (user1.getPassword()!=null) {
+            user.setPassword(user1.getPassword());
+        }if (user1.getAddresses()!=null) {
+            user.setAddresses(user1.getAddresses());
+        }
+
         return userRepository.save(user);
     }
     public void deleteUser(long id){
