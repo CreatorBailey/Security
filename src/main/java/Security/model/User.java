@@ -1,24 +1,31 @@
 package Security.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_boo")
 public class User {
     @Id
-    private Long id;
+    @Column(name = "user_id")
+    private Long user_id;
     private String first_name;
     private String last_name;
     @Column(unique = true)
     private String email;
     private String password;
 
+//    one-to-many mapping means that one row in a table is mapped to multiple rows in another table.
+    @OneToMany(targetEntity = Address.class, cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", referencedColumnName = "user_id")
+    private Set<Address> addresses;
+
     public Long getId() {
-        return id;
+        return user_id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.user_id = id;
     }
 
     public String getFirst_name() {
@@ -51,5 +58,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Set addresses) {
+        this.addresses = addresses;
     }
 }

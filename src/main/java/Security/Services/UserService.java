@@ -1,27 +1,45 @@
 package Security.Services;
 
+
 import Security.Repository.UserRepository;
+import Security.model.Address;
 import Security.model.User;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.keygen.KeyGenerators;
-
 import java.nio.ByteBuffer;
+import java.util.Set;
 
 @Service
 public class UserService {
+    private ObjectMapper mapper = new ObjectMapper();
+
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
     public User save(User user){
         User user1 = new User();
         user1.setFirst_name(user.getFirst_name());
         user1.setLast_name(user.getLast_name());
         user1.setEmail(user.getEmail());
         user1.setPassword(user.getPassword());
-        user1.setId(ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
-        return userRepository.save(user1);
+        Long userId = (ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong());
+        user1.setId(userId);
+//       Converting default linkedhashmap to a list of addresses
+        Set<Address> addresses = mapper.convertValue(
+                user.getAddresses(),
+                new TypeReference<Set<Address>>() { });
+        user1.setAddresses(addresses);
+//        Generating a random ID for each address
+        user1.getAddresses().forEach(address -> {
+            address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
+            address.setUserId(userId);
+        });
+         return userRepository.save(user1);
     }
     public User findByEmail(User user){
         User user1 = userRepository.findByEmail(user.getEmail());
@@ -33,4 +51,5 @@ public class UserService {
     public Page<User> getAllUsersByPage(Pageable pageable){
         return userRepository.findAll(pageable);
     }
+
 }
