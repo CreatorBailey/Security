@@ -24,11 +24,11 @@ import static Security.security.SecurityConstants.HEADER_STRING;
 import static Security.security.SecurityConstants.SECRET;
 import static Security.security.SecurityConstants.TOKEN_PREFIX;
 
-public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
