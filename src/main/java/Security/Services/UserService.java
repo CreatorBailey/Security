@@ -43,18 +43,20 @@ public class UserService {
         user1.setAddresses(addresses);
 //        Generating a random ID for each address
         Long finalUserId = userId;
-        user1.getAddresses().forEach(address -> {
+        if (user1.getAddresses() != null) {
+            user1.getAddresses().forEach(address -> {
 //            Loops through until ID is higher than 0
-            do{
-                address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
-            } while (address.getId() < 1);
-            address.setUserId(finalUserId);
-        });
+                do{
+                    address.setId((ByteBuffer.wrap(KeyGenerators.secureRandom().generateKey()).getLong()));
+                } while (address.getId() < 1);
+                address.setUserId(finalUserId);
+            });
+        }
          return userRepository.save(user1);
     }
     public User findByEmail(User user){
         User user1 = userRepository.findByEmail(user.getEmail());
-        if(user1.getPassword().equals(user.getPassword())){
+        if(user1 != null && user1.getPassword() != null && user1.getPassword().equals(user.getPassword())){
             return user1;
         }
         return null;
