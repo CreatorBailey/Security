@@ -69,11 +69,19 @@ class UserServiceTest {
         assertThat(testPage.getContent().size() == 3);
     }
 
-    //TODO: finish
+
     @Test
     void update() {
         UserService userService = mock(UserService.class);
         User user = new User();
+        User user1 = new User();
+        long id = 1L;
+
+
+
+        when(userService.update(user,id)).thenReturn(user1);
+        userService.update(user,id);
+        verify(userService).update(user,id);
 
     }
 
